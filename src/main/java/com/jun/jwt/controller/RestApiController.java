@@ -1,11 +1,13 @@
 package com.jun.jwt.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jun.jwt.config.auth.PrincipalDetails;
 import com.jun.jwt.model.User;
 import com.jun.jwt.repository.UserRepository;
 
@@ -35,5 +37,24 @@ public class RestApiController {
 		userRepository.save(user);
 		
 		return "signup complete";
+	}
+	
+	//user, manager, admin 권한 접근 가능
+	@GetMapping("/api/v1/user")
+	public String user() {
+		
+		return "user";
+	}
+	
+	//manager, admin 권한 접근 가능
+	@GetMapping("/api/v1/manager")
+	public String manager() {
+		return "manager";
+	}
+	
+	//admin 권한 접근 가능
+	@GetMapping("/api/v1/admin")
+	public String admin() {
+		return "admin";
 	}
 }

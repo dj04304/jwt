@@ -92,12 +92,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		// RSA방식은 아니고 Hash암호방식 (RSA는 공개키와 서버키 두개를 가지고 있어야 한다. Hash 암호방식이 더 선호된다.)
 		String jwtToken = JWT.create()
 				.withSubject("jun Token") //토큰 이름
-				.withExpiresAt(new Date(System.currentTimeMillis()+(60000 * 10))) // 토큰 만료시간
+				.withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME)) // 토큰 만료시간
 				.withClaim("id", principalDetails.getUser().getId()) //비공개클레임, 내가 원하는 key value값을 넣어줌
 				.withClaim("username", principalDetails.getUser().getUsername())
-				.sign(Algorithm.HMAC512("jun")); // Secret 값은 나만 알아야하는 서버의 고유 값 임의로 "jun"으로 함
+				.sign(Algorithm.HMAC512(JwtProperties.SECRET)); // Secret 값은 나만 알아야하는 서버의 고유 값 임의로 "jun"으로 함
 				
-		response.addHeader("Authorization", "Bearer " + jwtToken); //header에 담겨서 사용자에게 응답됨
+		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken); //header에 담겨서 사용자에게 응답됨
 	}
 	
 }

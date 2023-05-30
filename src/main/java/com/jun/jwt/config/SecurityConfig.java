@@ -15,7 +15,9 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 import org.springframework.web.filter.CorsFilter;
 
 import com.jun.jwt.config.jwt.JwtAuthenticationFilter;
+import com.jun.jwt.config.jwt.JwtAuthorizationFilter;
 import com.jun.jwt.filter.MyFilter3;
+import com.jun.jwt.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig{
 	
-	private final CorsFilter corsFilter;
+//	private final CorsFilter corsFilter;
+	private final UserRepository userRepository;
 	
 	@Autowired
 	private CorsConfig corsConfig; 
@@ -44,9 +47,7 @@ public class SecurityConfig{
 						
 						.and()
 						
-						.authorizeRequests(authrize -> authrize
-									
-									.antMatchers("/api/v1/user/**")
+						.authorizeRequests(authrize -> authrize.antMatchers("/api/v1/user/**")
 									.access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
 									
 									.antMatchers("/api/v1/manager/**")
@@ -94,7 +95,9 @@ public class SecurityConfig{
 			AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class); //AuthenticationManager를 통해서 로그인을 진행
 			http
 				.addFilter(corsConfig.coreFilter())
-				.addFilter(new JwtAuthenticationFilter(authenticationManager));
+				.addFilter(new JwtAuthenticationFilter(authenticationManager))
+				.addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
+			
 		}
 		
 	}
